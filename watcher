@@ -55,7 +55,7 @@
         ],
         "subject": "Falha na pipeline do GOCD",
         "body": {
-          "html": "Pipelines que falharam: {{ctx.payload.hits}} {{ctx.payload.hits.total}} {{ctx.payload.hits.hits.fields.pipeline_name}} {{ctx.payload.hits.hits.fields.stage_name}}"
+          "html": "Pipelines que falharam:  <ul> <li> {{ctx.payload.hits}}  {{ctx.payload.hits.total}} </li> <li>{{ctx.payload.hits.hits.fields.pipeline_name}} </li> <li> {{ctx.payload.hits.hits.fields.stage_name}} </li> <ul>"
         }
       }
     }
