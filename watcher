@@ -1,0 +1,63 @@
+{
+  "trigger": {
+    "schedule": {
+      "interval": "20m"
+    }
+  },
+  "input": {
+    "search": {
+      "request": {
+        "search_type": "query_then_fetch",
+        "indices": [
+          "gocd_pipelines*"
+        ],
+        "types": [],
+        "body": {
+          "size": 0,
+          "query": {
+            "bool": {
+              "filter": [
+                {
+                  "range": {
+                    "@timestamp": {
+                      "gte": "now-7d",
+                      "lte": "now",
+                      "time_zone": "America/Sao_Paulo"
+                    }
+                  }
+                },
+                {
+                  "query_string": {
+                    "query": "pipeline_result:Failed",
+                    "analyze_wildcard": true
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "condition": {
+    "compare": {
+      "ctx.payload.hits.total": {
+        "gte": 1
+      }
+    }
+  },
+  "actions": {
+    "send_email": {
+      "email": {
+        "profile": "outlook",
+        "to": [
+          "allan.sousa@edglobo.com.br, luis.oliveira@edglobo.com.br"
+        ],
+        "subject": "Falha na pipeline do GOCD",
+        "body": {
+          "html": "Pipelines que falharam: {{ctx.payload.hits}} {{ctx.payload.hits.total}} {{ctx.payload.hits.hits.fields.pipeline_name}} {{ctx.payload.hits.hits.fields.stage_name}}"
+        }
+      }
+    }
+  }
+}
